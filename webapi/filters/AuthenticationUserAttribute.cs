@@ -17,7 +17,7 @@ public class AuthenticationUserAttribute : AuthorizeAttribute, IAuthorizationFil
 
         var email = FromBase64String(token);
 
-        var exist = repository.Users.Any(user => user.Email.Equals(email));
+        var exist = repository.Users?.Any(user => user.Email.Equals(email));
 
         if(exist == false)
         {
