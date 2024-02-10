@@ -3,10 +3,7 @@ using webapi.Entities;
 using webapi.UseCases.Auctions.GetCurrent;
 
 namespace webapi.Controllers;
-
-[ApiController]
-[Route("[controller]")]
-public class AuctionController : ControllerBase
+public class AuctionController : WebapiAuctionBaseController
 {
     [HttpGet]
     [ProducesResponseType(typeof(Auction), StatusCodes.Status200OK)]
