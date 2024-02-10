@@ -5,6 +5,7 @@ namespace webapi.Repositories;
 public class webapiAuctionDbContext : DbContext
 {
   public DbSet<Auction>? Auctions { get; set; }
+  public DbSet<User>? Users { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
       string pathDbSqlite = "/home/rafael/www/nlw-csharp/leilaoDbNLW.db";

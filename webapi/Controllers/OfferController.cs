@@ -13,5 +13,5 @@ public class OfferController : WebapiAuctionBaseController
     public IActionResult CreateOffer([FromRoute] int itemId, [FromBody] RequestCreateOfferJson request)
     {
       return Ok();
-    }    
+    }
 }
