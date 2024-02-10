@@ -7,50 +7,50 @@ namespace webapi.filters;
 
 public class AuthenticationUserAttribute : AuthorizeAttribute, IAuthorizationFilter
 {
-    public void OnAuthorization(AuthorizationFilterContext context)
+  public void OnAuthorization(AuthorizationFilterContext context)
+  {
+    try
     {
-      try
+      var token = TokenOnRequest(context.HttpContext);
+
+      var repository = new WebapiAuctionDbContext();
+
+      var email = FromBase64String(token);
+
+      var exist = repository.Users?.Any(user => user.Email.Equals(email));
+
+      if (exist == false)
       {
-        var token = TokenOnRequest(context.HttpContext);
-
-        var repository = new webapiAuctionDbContext();
-
-        var email = FromBase64String(token);
-
-        var exist = repository.Users?.Any(user => user.Email.Equals(email));
-
-        if(exist == false)
-        {
-          context.Result = new UnauthorizedObjectResult("E-mail not valid");
-        }
+        context.Result = new UnauthorizedObjectResult("E-mail not valid");
       }
-      catch (Exception ex)
-      {
-        
-       context.Result = new UnauthorizedObjectResult(ex.Message);
-      }
+    }
+    catch (Exception ex)
+    {
 
+      context.Result = new UnauthorizedObjectResult(ex.Message);
     }
 
-    private static string TokenOnRequest(HttpContext context)
+  }
+
+  private static string TokenOnRequest(HttpContext context)
+  {
+
+    var authentication = context.Request.Headers.Authorization.ToString();
+
+    if (string.IsNullOrEmpty(authentication))
     {
-    
-      var authentication = context.Request.Headers.Authorization.ToString();
-      
-      if(string.IsNullOrEmpty(authentication))
-      {
-        throw new Exception("Token is missing.");
-      }
-
-      var tokenOutput = authentication["Bearer ".Length..];
-
-      return tokenOutput;
+      throw new Exception("Token is missing.");
     }
 
-    private string FromBase64String(string base64)
-    {
-      var data = Convert.FromBase64String(base64);
+    var tokenOutput = authentication["Bearer ".Length..];
 
-      return System.Text.Encoding.UTF8.GetString(data);
-    }
+    return tokenOutput;
+  }
+
+  private string FromBase64String(string base64)
+  {
+    var data = Convert.FromBase64String(base64);
+
+    return System.Text.Encoding.UTF8.GetString(data);
+  }
 }
