@@ -17,7 +17,7 @@ public class AuthenticationUserAttribute : AuthorizeAttribute, IAuthorizationFil
 
       var email = FromBase64String(token);
 
-      var exist = repository.Users?.Any(user => user.Email.Equals(email));
+      var exist = repository.Users!.Any(user => user.Email.Equals(email));
 
       if (exist == false)
       {
@@ -47,10 +47,10 @@ public class AuthenticationUserAttribute : AuthorizeAttribute, IAuthorizationFil
     return tokenOutput;
   }
 
-  private string FromBase64String(string base64)
+  private static string FromBase64String(string base64)
   {
     var data = Convert.FromBase64String(base64);
-
+    //return System.Text.Encoding.UTF8.GetString(data);
     return System.Text.Encoding.UTF8.GetString(data);
   }
 }

@@ -18,7 +18,7 @@ public class LoggedUser
 
     var email = FromBase64String(token);
 
-    var firstUserFinded = repository.Users.First(user => user.Email.Equals(email));
+    var firstUserFinded = repository.Users!.First(user => user.Email.Equals(email));
 
     return firstUserFinded;
   }
