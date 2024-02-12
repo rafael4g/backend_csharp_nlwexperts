@@ -1,7 +1,6 @@
-using System;
 using webapi.Communication.Requests;
+using webapi.Contracts;
 using webapi.Entities;
-using webapi.Repositories;
 using webapi.Services;
 
 namespace webapi.UseCases.Offers.CreateOffer;
@@ -9,13 +8,18 @@ namespace webapi.UseCases.Offers.CreateOffer;
 public class CreateOfferUseCase
 {
   private readonly LoggedUser _loggedUser;
+  private readonly IOfferRepository _repository;
   //start Construtor
-  public CreateOfferUseCase(LoggedUser loggedUser) => _loggedUser = loggedUser;
-  //end Construtor
-  public int Execute(int itemId,
-                     RequestCreateOfferJson request)
+  public CreateOfferUseCase(
+    LoggedUser loggedUser,
+    IOfferRepository repository)
   {
-    var repository = new WebapiAuctionDbContext();
+    _loggedUser = loggedUser;
+    _repository = repository;
+  }
+  //end Construtor
+  public int Execute(int itemId, RequestCreateOfferJson request)
+  {
 
     var user = _loggedUser.User();
 
@@ -27,9 +31,7 @@ public class CreateOfferUseCase
       UserId = user.Id,
     };
 
-    repository.Offers.Add(offer);
-
-    repository.SaveChanges();
+    _repository.Add(offer);
 
     return offer.Id;
 

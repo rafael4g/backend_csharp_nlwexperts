@@ -1,24 +1,25 @@
+using webapi.Contracts;
 using webapi.Entities;
-using webapi.Repositories;
 
 namespace webapi.Services;
 
 public class LoggedUser
 {
   private readonly IHttpContextAccessor _httpContextAccessor;
-  public LoggedUser(IHttpContextAccessor httpContext)
+  private readonly IUserRepository _repository;
+  public LoggedUser(IHttpContextAccessor httpContext, IUserRepository repository)
   {
     _httpContextAccessor = httpContext;
+    _repository = repository;
   }
   public User User()
   {
-    var repository = new WebapiAuctionDbContext();
 
     var token = TokenOnRequest(_httpContextAccessor);
 
     var email = FromBase64String(token);
 
-    var firstUserFinded = repository.Users!.First(user => user.Email.Equals(email));
+    var firstUserFinded = _repository.GetUserByEmail(email);
 
     return firstUserFinded;
   }
@@ -33,7 +34,7 @@ public class LoggedUser
     return tokenOutput;
   }
 
-  private string FromBase64String(string base64)
+  private static string FromBase64String(string base64)
   {
     var data = Convert.FromBase64String(base64);
 
